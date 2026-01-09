@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briefing Técnico - Casa Goianita Digital | Live Consultoria</title>
+    
+    <!-- Fontes: Poppins (Interface) e Merriweather (Analítica) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Ícones Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind (para estrutura de layout ágil, customizado via CSS abaixo) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* --- 1. Núcleo da Identidade Visual (Brand Core) --- */
+        :root {
+            /* Atmosfera */
+            --live-deep: #06192a;
+            
+            /* Superfícies (Refractive Glass) */
+            --live-glass: rgba(10, 36, 61, 0.70);
+            --live-glass-hover: rgba(15, 45, 75, 0.85);
+            --glass-blur: blur(16px) saturate(180%);
+            
+            /* Luz & Ação */
+            --live-accent: #00e800;
+            --live-accent-dim: rgba(0, 232, 0, 0.15);
+            --kinetic-gradient: linear-gradient(90deg, #ffffff 0%, #cccccc 50%, #00e800 100%);
+            
+            /* Física (Springs) */
+            --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-fluid: cubic-bezier(0.4, 0.0, 0.2, 1);
+            
+            /* Bordas */
+            --border-subtle: rgba(255, 255, 255, 0.15);
+            --border-active: rgba(0, 232, 0, 0.4);
+        }
+
+        /* --- 2. Atmosfera e Física --- */
+        body {
+            background-color: var(--live-deep);
+            color: #f0f0f0;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Camada Textura (Z -2) */
+        .bg-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.05;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Camada Luz Dinâmica (Flashlight) - Desktop */
+        .flashlight {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,232,0,0.06) 0%, rgba(0,0,0,0) 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: -1;
+            mix-blend-mode: screen;
+            transition: opacity 0.3s ease;
+        }
+
+        /* --- 3. Componentes e Microinterações --- */
+        
+        /* Typography Kinetic */
+        h1, h2 {
+            background: var(--kinetic-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* Padronização de Texto */
+        p, li, .text-standard {
+            color: #e0e0e0 !important;
+            line-height: 1.6;
+        }
+
+        /* Card Halo com Física */
+        .glass-card {
+            background: var(--live-glass);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.4s var(--spring-bounce), 
+                        border-color 0.3s var(--ease-fluid),
+                        box-shadow 0.3s var(--ease-fluid);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                        rgba(255,255,255,0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            border-color: var(--border-active);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Botão Ghost Neon */
+        .btn-neon {
+            background: transparent;
+            border: 1px solid var(--live-accent);
+            color: var(--live-accent);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-fluid);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-neon:hover {
+            background: var(--live-accent-dim);
+            box-shadow: 0 0 15px rgba(0, 232, 0, 0.3);
+            text-shadow: 0 0 8px rgba(0, 232, 0, 0.5);
+        }
+
+        .btn-neon:active {
+            transform: scale(0.95);
+        }
+
+        /* Badge de Status */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-subtle);
+            color: #ffffff;
+        }
+        .badge.critical { border-color: #ff4444; color: #ff8888; background: rgba(255, 0, 0, 0.1); }
+        .badge.high { border-color: #ffaa00; color: #ffcc00; background: rgba(255, 170, 0, 0.1); }
+        .badge.normal { border-color: var(--live-accent); color: var(--live-accent); background: var(--live-accent-dim); }
+
+        /* --- 4. Adaptação e Responsividade --- */
+        body.mode-analytical p {
+            font-family: 'Merriweather', serif;
+            line-height: 1.8;
+            font-size: 1.05rem;
+            color: #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .flashlight { display: none; }
+            .glass-card:hover { transform: none; }
+            h1 { font-size: 2rem; }
+        }
+        
+        .footer-link {
+            color: rgba(255,255,255,0.4);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+        .footer-link:hover {
+            color: var(--live-accent);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="bg-texture"></div>
+    <div id="flashlight" class="flashlight"></div>
+
+    <div class="max-w-6xl mx-auto px-6 py-12 relative z-10">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-center mb-16 animate-fade-in-down">
+            <div class="flex items-center gap-4 mb-6 md:mb-0">
+                <img src="https://raw.githubusercontent.com/Clebito2/ConsultoriaLive/main/Logo%20live%20oficial-21.png" alt="Live Consultoria" class="h-16 w-auto drop-shadow-2xl">
+                <div class="h-10 w-px bg-white/10 mx-4"></div>
+                <div>
+                    <span class="block text-xs text-gray-400 uppercase tracking-widest">Documento Técnico</span>
+                    <span class="block text-sm font-semibold text-white">V6.2 Elite Output</span>
+                </div>
+            </div>
+            <div class="text-right">
+                <span class="badge normal mb-2">Status: Briefing Expandido</span>
+                <p class="text-xs text-gray-400 font-mono mt-1">ID: #CASA-GO-OMNI-2025</p>
+            </div>
+        </header>
+
+        <!-- Título Principal -->
+        <section class="mb-16 text-center md:text-left">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 tracking-tight leading-tight">
+                Casa Goianita <br> <span class="font-light text-white">Digital & Omnichannel</span>
+            </h1>
+            <p class="text-xl text-standard max-w-2xl mt-4">
+                Briefing Técnico de Reestruturação do Sistema de Listas de Presentes, Logística e Integração ERP (Pmenu/Vtex).
+            </p>
+        </section>
+
+        <!-- 1. Visão Geral -->
+        <section class="mb-20">
+            <div class="glass-card">
+                <div class="flex items-start gap-4">
+                    <i data-lucide="target" class="text-[var(--live-accent)] w-8 h-8 mt-1"></i>
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4">1. Visão Geral e Objetivo</h2>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--live-accent)]"></span>
+                                <strong>Cliente:</strong> Casa Goianita (Loja 85, T4, Marista, Bueno).
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--live-accent)]"></span>
+                                <strong>Foco:</strong> Automação total de processos manuais e confiabilidade de estoque.
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--live-accent)]"></span>
+                                <strong>Meta Técnica:</strong> Criar um ecossistema digital fluido onde a informação circula automaticamente entre Site, ERP Pmenu e Vtex, eliminando a dependência de processos em papel.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Diagnóstico -->
+        <section class="mb-20">
+            <div class="flex items-center gap-3 mb-8">
+                <i data-lucide="activity" class="text-[var(--live-accent)]"></i>
+                <h2 class="text-3xl font-bold m-0">2. Diagnóstico Técnico</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card A -->
+                <div class="glass-card group">
+                    <div class="absolute top-4 right-4 text-red-500"><i data-lucide="database"></i></div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Integração e SKUs</h3>
+                    <p class="text-sm leading-relaxed mb-4">
+                        O site vende baseado em saldo físico não sincronizado, gerando venda de indisponíveis. Atualização de SKUs da Vtex é manual e unitária.
+                    </p>
+                    <div class="h-1 w-full bg-white/5 rounded overflow-hidden">
+                        <div class="h-full bg-red-500 w-3/4"></div>
+                    </div>
+                    <span class="text-xs text-red-400 mt-2 block">Criticidade: Alta</span>
+                </div>
+
+                <!-- Card B -->
+                <div class="glass-card group">
+                    <div class="absolute top-4 right-4 text-orange-500"><i data-lucide="file-warning"></i></div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Auditoria & Papel</h3>
+                    <p class="text-sm leading-relaxed mb-4">
+                        Instabilidade do ERP Pmenu obriga a manutenção de arquivos físicos ("caixas de papel") de canhotos assinados. Dependência extrema de memória humana.
+                    </p>
+                    <div class="h-1 w-full bg-white/5 rounded overflow-hidden">
+                        <div class="h-full bg-orange-500 w-2/3"></div>
+                    </div>
+                    <span class="text-xs text-orange-400 mt-2 block">Criticidade: Média-Alta</span>
+                </div>
+
+                <!-- Card C -->
+                <div class="glass-card group">
+                    <div class="absolute top-4 right-4 text-yellow-500"><i data-lucide="truck"></i></div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Logística Cega</h3>
+                    <p class="text-sm leading-relaxed mb-4">
+                        Falta de rastreio de volumes trocados. Entregas e transferências dependem de conferência visual, sem validação sistêmica (QR Code/Bipagem).
+                    </p>
+                    <div class="h-1 w-full bg-white/5 rounded overflow-hidden">
+                        <div class="h-full bg-yellow-500 w-1/2"></div>
+                    </div>
+                    <span class="text-xs text-yellow-400 mt-2 block">Criticidade: Média</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Requisitos Funcionais -->
+        <section class="mb-20">
+            <div class="flex items-center gap-3 mb-8">
+                <i data-lucide="cpu" class="text-[var(--live-accent)]"></i>
+                <h2 class="text-3xl font-bold m-0">3. Funcionalidades & Soluções</h2>
+            </div>
+
+            <!-- Módulo 1 -->
+            <div class="glass-card mb-8">
+                <h3 class="text-2xl font-bold mb-6 text-[var(--live-accent)]">Módulo 1: Gestão de Listas (Front-end)</h3>
+                <div class="space-y-6">
+                    
+                    <!-- Item 1.1 -->
+                    <div class="flex gap-4">
+                        <div class="mt-1 bg-white/10 p-2 rounded-lg"><i data-lucide="refresh-cw" class="w-5 h-5"></i></div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-white">Sincronização em Tempo Real (API Pmenu)</h4>
+                            <p class="text-sm mt-1">
+                                Consulta via API ao ERP antes do checkout. Funcionalidade de <strong>"Reserva Temporária"</strong>: ao iniciar o checkout, o sistema reserva o item no estoque físico, impedindo venda simultânea na loja.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Item 1.2 -->
+                    <div class="flex gap-4">
+                        <div class="mt-1 bg-white/10 p-2 rounded-lg"><i data-lucide="eye" class="w-5 h-5"></i></div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-white">Status "Comprado" & Notificações</h4>
+                            <p class="text-sm mt-1">
+                                Atualização instantânea da lista para evitar presentes repetidos. Alertas automáticos para lojas e administrador caso a noiva altere dados sensíveis (endereço/data de entrega).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Item 1.3 -->
+                    <div class="flex gap-4">
+                        <div class="mt-1 bg-white/10 p-2 rounded-lg"><i data-lucide="credit-card" class="w-5 h-5"></i></div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-white">Opção "Pré-Envio" (Crédito Flexível)</h4>
+                            <p class="text-sm mt-1">
+                                Noiva decide no painel se quer o produto físico ou a conversão em crédito <strong>antes</strong> da embalagem/logística. Reduz custos de frete e avarias.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Módulo 2 -->
+            <div class="glass-card mb-8">
+                <h3 class="text-2xl font-bold mb-6 text-[var(--live-accent)]">Módulo 2: Back-office & Logística</h3>
+                <div class="space-y-6">
+                    <!-- Item 2.1 -->
+                    <div class="flex gap-4">
+                        <div class="mt-1 bg-white/10 p-2 rounded-lg"><i data-lucide="qr-code" class="w-5 h-5"></i></div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-white">Borderôs com QR Code & Agendamento</h4>
+                            <p class="text-sm mt-1">
+                                Geração automática de guias de transporte (borderôs) com QR Code para cada volume. Calendário de retiradas integrado para evitar acúmulo na expedição.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Item 2.2 -->
+                    <div class="flex gap-4">
+                        <div class="mt-1 bg-white/10 p-2 rounded-lg"><i data-lucide="arrow-left-right" class="w-5 h-5"></i></div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-white">Logística Reversa Automatizada</h4>
+                            <p class="text-sm mt-1">
+                                Fluxo de "Trocas de Lista": ao confirmar devolução, o sistema automaticamente 1) Alimenta o estoque físico, 2) Gera crédito na carteira digital, 3) Emite NF de devolução.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Item 2.3 -->
+                    <div class="flex gap-4">
+                        <div class="mt-1 bg-white/10 p-2 rounded-lg"><i data-lucide="file-check" class="w-5 h-5"></i></div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-white">Auditoria Digital (Upload de Canhotos)</h4>
+                            <p class="text-sm mt-1">
+                                Substituição do arquivo físico. Upload de foto do comprovante assinado diretamente no pedido, criando rastro digital auditável e seguro.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inovação Futura -->
+            <div class="glass-card border-l-4 border-[var(--live-accent)]">
+                <h3 class="text-2xl font-bold mb-6 text-white">Escalabilidade & Integrações</h3>
+                <div class="flex gap-4">
+                    <div class="mt-1 bg-white/10 p-2 rounded-lg"><i data-lucide="sparkles" class="w-5 h-5"></i></div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-white">Ecossistema de Parceiros & Automação</h4>
+                        <p class="text-sm mt-1">
+                            Integração futura para uso de créditos em hotéis, adegas e viagens. Automação da importação de SKUs da Vtex, eliminando o cadastro manual item a item.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Roadmap -->
+        <section class="mb-20">
+            <div class="flex items-center gap-3 mb-8">
+                <i data-lucide="map" class="text-[var(--live-accent)]"></i>
+                <h2 class="text-3xl font-bold m-0">5. Roadmap de Prioridades</h2>
+            </div>
+            
+            <div class="space-y-4 relative">
+                <!-- Linha do tempo vertical -->
+                <div class="absolute left-4 top-0 bottom-0 w-px bg-white/10 ml-0.5"></div>
+
+                <div class="relative pl-12">
+                    <div class="absolute left-0 top-1.5 w-10 h-10 flex items-center justify-center bg-[var(--live-deep)] border border-[var(--live-accent)] rounded-full text-[var(--live-accent)] text-xs font-bold z-10">P0</div>
+                    <h4 class="text-xl font-bold text-white">API Pmenu & Reserva de Estoque</h4>
+                    <p class="text-standard">Sincronização em tempo real e trava de venda simultânea.</p>
+                </div>
+
+                <div class="relative pl-12 opacity-90">
+                    <div class="absolute left-0 top-1.5 w-10 h-10 flex items-center justify-center bg-[var(--live-deep)] border border-white/20 rounded-full text-white text-xs font-bold z-10">P1</div>
+                    <h4 class="text-xl font-bold text-white">Carteira Digital & Pré-Envio</h4>
+                    <p class="text-standard">Unificação de créditos por CPF e decisão de conversão pela noiva.</p>
+                </div>
+
+                <div class="relative pl-12 opacity-80">
+                    <div class="absolute left-0 top-1.5 w-10 h-10 flex items-center justify-center bg-[var(--live-deep)] border border-white/20 rounded-full text-white text-xs font-bold z-10">P2</div>
+                    <h4 class="text-xl font-bold text-white">Logística Reversa & Borderôs</h4>
+                    <p class="text-standard">QR Codes, agendamento de retiradas e fluxo automático de devolução.</p>
+                </div>
+
+                <div class="relative pl-12 opacity-60">
+                    <div class="absolute left-0 top-1.5 w-10 h-10 flex items-center justify-center bg-[var(--live-deep)] border border-white/20 rounded-full text-white text-xs font-bold z-10">P3</div>
+                    <h4 class="text-xl font-bold text-white">Auditoria Digital & Vtex</h4>
+                    <p class="text-standard">Digitalização de canhotos e automação de cadastro de SKUs.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. ROI -->
+        <section class="mb-24">
+            <div class="glass-card bg-gradient-to-r from-[var(--live-deep)] to-[#0a243d]">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-4">Benefícios Esperados (ROI)</h2>
+                        <ul class="space-y-2 text-standard">
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-[var(--live-accent)]"></i> Fim das caixas de papel (Auditoria Digital)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-[var(--live-accent)]"></i> Zero venda sem estoque (Reserva Pmenu)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-[var(--live-accent)]"></i> Redução de logística reversa física</li>
+                        </ul>
+                    </div>
+                    <div>
+                         <button class="btn-neon flex items-center gap-2">
+                            Aprovar Briefing <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-white/10 pt-8 pb-12 text-center">
+            <p class="text-gray-500 text-sm mb-2">Live Consultoria – Design System Team</p>
+            <div class="mt-8">
+                <a href="mailto:cleberdonato@ecossistemalive.com.br" class="footer-link">
+                    ₢ Powered by Cléber Donato.
+                </a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+        const flashlight = document.getElementById('flashlight');
+        document.addEventListener('mousemove', (e) => {
+            flashlight.style.left = `${e.clientX}px`;
+            flashlight.style.top = `${e.clientY}px`;
+            document.querySelectorAll('.glass-card').forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                document.body.classList.add('mode-analytical');
+            } else {
+                document.body.classList.remove('mode-analytical');
+            }
+        });
+    </script>
+</body>
+</html>
